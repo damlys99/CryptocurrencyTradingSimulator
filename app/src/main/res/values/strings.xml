@@ -3,4 +3,5 @@
     <string name="menu_crypto_list">Cryptocurrencies</string>
     <string name="menu_profile">Profile</string>
     <string name="menu_achievements">Achievements</string>
+    <string name="item_crypto_icon">Crypto Item Icon</string>
 </resources>

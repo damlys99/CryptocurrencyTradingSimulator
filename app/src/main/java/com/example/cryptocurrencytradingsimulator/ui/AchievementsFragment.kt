@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.cryptocurrencytradingsimulator.R
 import com.example.cryptocurrencytradingsimulator.viewmodels.AchievementsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AchievementsFragment : Fragment() {
 
     companion object {
