@@ -6,18 +6,31 @@
     <data>
         <variable name="viewModel" type="com.example.cryptocurrencytradingsimulator.viewmodels.CryptoListViewModel"/>
     </data>
-
-
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        <ProgressBar
+            android:id="@+id/progressBarCryptoList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/purple_500"
+            tools:visibility="visible" />
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:list-item="@layout/crypto_list_item"/>
+            android:layout_height="match_parent">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:list-item="@layout/crypto_list_item">
 
-    </RelativeLayout>
+            </androidx.recyclerview.widget.RecyclerView>
+
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </FrameLayout>
 </layout>

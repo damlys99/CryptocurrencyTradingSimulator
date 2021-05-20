@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.example.cryptocurrencytradingsimulator.MainApplication
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
-import com.example.cryptocurrencytradingsimulator.data.models.CryptoResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -14,14 +13,13 @@ import javax.inject.Inject
 class ApiHelperImpl @Inject constructor(
     private val apiService: ApiService
 ):ApiHelper{
-    override fun getAllCrypto(): MutableLiveData<List<Crypto>> {
-        val data : MutableLiveData<List<Crypto>> = MutableLiveData()
-        val requestCall = apiService.getAllCrypto()
+    override fun getAllCrypto(data: MutableLiveData<List<Crypto>>){
+        val requestCall = apiService.getAllCrypto("usd", "market_cap_desc", 250, 1, false, "24h")
         requestCall.enqueue(object : Callback<List<Crypto>> {
             override fun onResponse(call: Call<List<Crypto>>, response: Response<List<Crypto>>) {
                 Log.d("Response", "onResponse: ${response.body()}")
                 if (response.isSuccessful) {
-                    data.postValue(response.body()!!)
+                    data.value = response.body()!!
                 } else {
                     Toast.makeText(
                         MainApplication.applicationContext(),
@@ -39,6 +37,5 @@ class ApiHelperImpl @Inject constructor(
                 ).show()
             }
         })
-        return data
     }
 }

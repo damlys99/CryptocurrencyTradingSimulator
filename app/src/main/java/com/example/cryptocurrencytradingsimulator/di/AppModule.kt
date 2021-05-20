@@ -25,10 +25,10 @@ object AppModule{
     @Singleton
     @Provides
     fun provideOkHttpClient() = if (BuildConfig.DEBUG){
-        val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.apply { loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY }
+        //val loggingInterceptor = HttpLoggingInterceptor()
+        //loggingInterceptor.apply { loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY }
         OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
+            //.addInterceptor(loggingInterceptor)
             .build()
     }else{
         OkHttpClient
