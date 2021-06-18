@@ -19,5 +19,19 @@
         android:id="@+id/menu_crypto_list"
         android:name="com.example.cryptocurrencytradingsimulator.ui.CryptoListFragment"
         android:label="crypto_list_fragment"
-        tools:layout="@layout/crypto_list_fragment" />
+        tools:layout="@layout/crypto_list_fragment" >
+        <action
+            android:id="@+id/action_menu_crypto_list_to_cryptoFragment"
+            app:destination="@id/cryptoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cryptoFragment"
+        android:name="com.example.cryptocurrencytradingsimulator.ui.CryptoFragment"
+        android:label="crypto_fragment"
+        tools:layout="@layout/crypto_fragment">
+        <argument
+            android:name="cryptoId"
+            app:argType="string"
+            android:defaultValue="btc" />
+    </fragment>
 </navigation>

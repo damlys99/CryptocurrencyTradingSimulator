@@ -2,30 +2,56 @@ package com.example.cryptocurrencytradingsimulator.ui.adapters
 
 import android.graphics.Color.GREEN
 import android.graphics.Color.RED
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.appcompat.view.menu.ActionMenuItemView
-import androidx.databinding.DataBindingUtil
+import android.widget.*
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.module.AppGlideModule
 import com.example.cryptocurrencytradingsimulator.R
+import com.example.cryptocurrencytradingsimulator.data.api.ApiRepository
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
-import com.example.cryptocurrencytradingsimulator.databinding.CryptoListItemBinding
+import com.example.cryptocurrencytradingsimulator.data.models.Favorite
 import com.example.cryptocurrencytradingsimulator.di.GlideApp
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import java.lang.Character.toLowerCase
 import java.text.NumberFormat
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.sign
 
-class CryptoListAdapter internal  constructor(private val listener: CryptoItemClickListener):
+class CryptoListAdapter internal constructor(private val listener: CryptoItemClickListener, private val favoriteListener: FavoriteItemClickListener):
     ListAdapter<Crypto, CryptoListAdapter.CryptoListViewHolder>(CryptoDiffCallback()) {
 
+    private var unfilteredList : List<Crypto> = arrayListOf()
+
+    fun modifyList(list: List<Crypto>){
+        unfilteredList = list
+        submitList(list)
+    }
+
+
+    fun filter(query: CharSequence?) {
+        val list = mutableListOf<Crypto>()
+        // perform the data filtering
+        if(!query.isNullOrEmpty()) {
+            list.addAll(unfilteredList.filter {
+                it.symbol!!.toLowerCase(Locale.getDefault()).contains(query.toString().toLowerCase(Locale.getDefault())) ||
+                        it.name!!.toLowerCase(Locale.getDefault()).contains(query.toString().toLowerCase(Locale.getDefault())) })
+        } else {
+            list.addAll(unfilteredList)
+        }
+
+        submitList(list)
+    }
+
+    fun favorites(){
+        val list = mutableListOf<Crypto>()
+        list.addAll(unfilteredList.filter{it -> it.favorite == true})
+        modifyList(list)
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CryptoListViewHolder {
         val view  = LayoutInflater.from(parent.context).inflate(R.layout.crypto_list_item,parent,false)
         return CryptoListViewHolder(view)
@@ -34,54 +60,73 @@ class CryptoListAdapter internal  constructor(private val listener: CryptoItemCl
     override fun onBindViewHolder(holder: CryptoListViewHolder, position: Int) {
             val item = getItem(position)
             holder.itemView.setOnClickListener { listener.chooseCrypto(item) }
+            holder.checkBox.setOnClickListener{ favoriteListener.addOrDeleteFavorite(item, holder.checkBox.isChecked) }
             holder.bind(item)
 
     }
 
-    override fun getItemCount(): Int {
-        return super.getItemCount()
-    }
-
-    class CryptoListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    class CryptoListViewHolder constructor(itemView: View): RecyclerView.ViewHolder(itemView){
 
         var imageView = itemView.findViewById<ImageView>(R.id.itCryptoIcon)
         var name = itemView.findViewById<TextView>(R.id.itCryptoName)
         var symbol = itemView.findViewById<TextView>(R.id.itCryptoSymbol)
         var price = itemView.findViewById<TextView>(R.id.itCryptoPrice)
         var priceChange = itemView.findViewById<TextView>(R.id.itCryptoPriceChange)
+        var checkBox = itemView.findViewById<CheckBox>(R.id.checkBox)
 
-        fun bind(currentCrypto: Crypto){
-            name.text = currentCrypto.name
+        fun bind(currentCryptoListItem: Crypto){
+            name.text = currentCryptoListItem.name
 
-            symbol.text = currentCrypto.symbol
+            symbol.text = currentCryptoListItem.symbol
 
-            GlideApp.with(itemView.context).load(currentCrypto.image).into(imageView)
+            checkBox.isChecked = currentCryptoListItem.favorite!!
+
+
+            GlideApp.with(itemView.context).load(currentCryptoListItem.image).into(imageView)
 
             val currencyFormat = NumberFormat.getCurrencyInstance()
             currencyFormat.currency = Currency.getInstance("USD")
             currencyFormat.maximumFractionDigits = 10
-            price.text = currencyFormat.format(currentCrypto.current_price)
+            price.text = currencyFormat.format(currentCryptoListItem.current_price)
 
             val percentFormat = NumberFormat.getPercentInstance()
             percentFormat.maximumFractionDigits = 2
             percentFormat.minimumFractionDigits = 2
-            priceChange.text = percentFormat.format(currentCrypto.price_change_percentage_24h_in_currency/100)
-            when(sign(currentCrypto.price_change_percentage_24h_in_currency)){
-                1.0 -> priceChange.setTextColor(GREEN)
-                -1.0 -> priceChange.setTextColor(RED)
+            if(currentCryptoListItem.price_change_percentage_24h_in_currency != null) {
+                priceChange.text =
+                    percentFormat.format(currentCryptoListItem.price_change_percentage_24h_in_currency / 100)
+                when (sign(currentCryptoListItem.price_change_percentage_24h_in_currency)) {
+                    1.0 -> priceChange.setTextColor(GREEN)
+                    -1.0 -> priceChange.setTextColor(RED)
+                }
             }
         }
     }
 
+
 }
 
 interface CryptoItemClickListener {
-    fun chooseCrypto(crypto: Crypto)
+    fun chooseCrypto(cryptoListItem: Crypto)
 }
 
 private class CryptoDiffCallback : DiffUtil.ItemCallback<Crypto>(){
     override fun areItemsTheSame(oldItem: Crypto, newItem: Crypto): Boolean {
         return oldItem.id == newItem.id && oldItem.current_price == newItem.current_price
+    }
+
+    override fun areContentsTheSame(oldItem: Crypto, newItem: Crypto): Boolean {
+        return oldItem == newItem
+    }
+}
+
+interface FavoriteItemClickListener {
+    fun addOrDeleteFavorite(cryptoListItem: Crypto, isChecked: Boolean)
+}
+
+private class FavoriteDiffCallback : DiffUtil.ItemCallback<Crypto>(){
+    override fun areItemsTheSame(oldItem: Crypto, newItem: Crypto): Boolean {
+        return oldItem.id == newItem.id && oldItem.favorite == newItem.favorite
     }
 
     override fun areContentsTheSame(oldItem: Crypto, newItem: Crypto): Boolean {

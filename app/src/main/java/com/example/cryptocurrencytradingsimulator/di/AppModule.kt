@@ -1,13 +1,16 @@
 package com.example.cryptocurrencytradingsimulator.di
 
+import android.content.Context
 import com.example.cryptocurrencytradingsimulator.BuildConfig
-import com.example.cryptocurrencytradingsimulator.data.api.ApiHelper
-import com.example.cryptocurrencytradingsimulator.data.api.ApiHelperImpl
+import com.example.cryptocurrencytradingsimulator.data.AppDatabase
+import com.example.cryptocurrencytradingsimulator.data.Repository
 import com.example.cryptocurrencytradingsimulator.data.api.ApiService
+import com.example.cryptocurrencytradingsimulator.data.dao.FavoriteDao
 import com.example.cryptocurrencytradingsimulator.utils.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -25,10 +28,10 @@ object AppModule{
     @Singleton
     @Provides
     fun provideOkHttpClient() = if (BuildConfig.DEBUG){
-        //val loggingInterceptor = HttpLoggingInterceptor()
-        //loggingInterceptor.apply { loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY }
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.apply { loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY }
         OkHttpClient.Builder()
-            //.addInterceptor(loggingInterceptor)
+            .addInterceptor(loggingInterceptor)
             .build()
     }else{
         OkHttpClient
@@ -48,8 +51,15 @@ object AppModule{
     @Singleton
     fun provideApiService(retrofit: Retrofit) = retrofit.create(ApiService::class.java)
 
-    @Provides
     @Singleton
-    fun provideApiHelper(apiHelper: ApiHelperImpl): ApiHelper = apiHelper
+    @Provides
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        return AppDatabase.getInstance(context)
+    }
+
+    @Provides
+    fun provideFavoriteDao(appDatabase: AppDatabase): FavoriteDao {
+        return appDatabase.favoriteDao()
+    }
 
 }

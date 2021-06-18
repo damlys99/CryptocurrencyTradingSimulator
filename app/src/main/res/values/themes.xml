@@ -13,4 +13,57 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+
+    <style name="toolbar" parent="Theme.CryptocurrencyTradingSimulator">
+        <item name="colorControlNormal">@color/white</item>
+        <item name="editTextColor">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
+
+    <style name="radio_buttons" parent="android:Widget.Material.CompoundButton.RadioButton">
+        <item name="android:layout_width">35dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/custom_radio_button_selector</item>
+        <item name="android:button">@null</item>
+        <item name="android:textColor">@drawable/custom_radio_button_textcolor</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="card_views" parent="CardView">
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="additional_info_card_view" parent="CardView">
+        <item name="android:layout_height">80dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginLeft">1dp</item>
+        <item name="android:layout_marginBottom">1dp</item>
+        <item name="android:layout_marginRight">1dp</item>
+
+    </style>
+
+    <style name="additional_info_block">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+    <style name="additional_info_label" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">0.1</item>
+    </style>
+    <style name="additional_info_elem" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:text">"ahh"</item>
+    </style>
 </resources>

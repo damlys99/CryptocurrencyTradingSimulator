@@ -4,4 +4,22 @@
     <string name="menu_profile">Profile</string>
     <string name="menu_achievements">Achievements</string>
     <string name="item_crypto_icon">Crypto Item Icon</string>
+    <string name="chart_radio_label_1d">1D</string>
+    <string name="chart_radio_label_7d">7D</string>
+    <string name="chart_radio_label_14d">14D</string>
+    <string name="chart_radio_label_1m">1M</string>
+    <string name="chart_radio_label_3m">3M</string>
+    <string name="chart_radio_label_6m">6M</string>
+    <string name="chart_radio_label_1y">1Y</string>
+    <string name="additional_info_market_cap_label">Market Cap</string>
+    <string name="additional_info_volume_label">Total Volume</string>
+    <string name="additional_info_ath_label">All Time High</string>
+    <string name="additional_info_24h_high_label">24 Hour High</string>
+    <string name="additional_info_24h_low_label">24 Hour Low</string>
+    <string name="additional_info_atl_label">All Time Low</string>
+    <string name="additional_info_price_change_percent_label">Price Change 24h %</string>
+    <string name="additional_info_price_change_label">Price Change 24h</string>
+    <string name="menu_search">Search</string>
+    <string name="tab_favorite">Favorite</string>
+    <string name="tab_all">All</string>
 </resources>
