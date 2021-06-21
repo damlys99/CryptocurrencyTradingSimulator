@@ -12,6 +12,7 @@ interface ApiService {
 
     @GET("coins/markets")
     suspend fun getAllCrypto(
+        @Query("ids") ids: String,
         @Query("vs_currency") vs_currency: String,
         @Query("order") order: String,
         @Query("per_page") per_page: Int,

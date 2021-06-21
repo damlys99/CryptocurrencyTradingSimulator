@@ -11,12 +11,15 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import com.example.cryptocurrencytradingsimulator.MainApplication
 import com.example.cryptocurrencytradingsimulator.R
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
 import com.example.cryptocurrencytradingsimulator.databinding.CryptoFragmentBinding
 import com.example.cryptocurrencytradingsimulator.di.GlideApp
+import com.example.cryptocurrencytradingsimulator.notifications.NotificationService
 import com.example.cryptocurrencytradingsimulator.ui.base.BaseFragment
 import com.example.cryptocurrencytradingsimulator.viewmodels.CryptoViewModel
 import com.example.cryptocurrencytradingsimulator.viewmodels.CryptoViewModelFactory
@@ -39,7 +42,6 @@ import java.text.NumberFormat
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
@@ -57,7 +59,7 @@ class CryptoFragment : BaseFragment() {
     val lineDataSet: LineDataSet = LineDataSet(lineEntries, "Price")
     val lineData: LineData = LineData(lineDataSet)
     var first: Long = 1000000000000L
-    val cryptoViewModel: CryptoViewModel by viewModels {
+    val cryptoViewModel: CryptoViewModel by activityViewModels {
         CryptoViewModel.provideFactory(cryptoViewModelFactory, mArgs.cryptoId)
     }
 
@@ -94,7 +96,8 @@ class CryptoFragment : BaseFragment() {
                     // Log.d("aaa", (value.toLong() + (first)).toString())
                     return formatter.format(
                         LocalDateTime.ofInstant(
-                            Instant.ofEpochMilli(value.toLong() + first), ZoneId.systemDefault())
+                            Instant.ofEpochMilli(value.toLong() + first), ZoneId.systemDefault()
+                        )
                     )
                 }
             }
@@ -176,7 +179,8 @@ class CryptoFragment : BaseFragment() {
                // Log.d("aaa", (value.toLong() + (first)).toString())
                 return formatter.format(
                     LocalDateTime.ofInstant(
-                        Instant.ofEpochMilli(value.toLong() + first), ZoneId.systemDefault())
+                        Instant.ofEpochMilli(value.toLong() + first), ZoneId.systemDefault()
+                    )
                 )
             }
         }
@@ -193,6 +197,11 @@ class CryptoFragment : BaseFragment() {
 //    }
 
 //}
+
+    fun onSendNotificationsButtonClick(view: View?) {
+        NotificationService.setAlarm(requireContext())
+        Log.d("AA", "bb")
+    }
 
 }
 

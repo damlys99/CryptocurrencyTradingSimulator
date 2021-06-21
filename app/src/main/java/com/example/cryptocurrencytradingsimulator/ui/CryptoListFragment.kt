@@ -52,7 +52,6 @@ class CryptoListFragment() : BaseFragment(), CryptoItemClickListener, FavoriteIt
 
 
         binding.swipeRecyclerView.setOnRefreshListener{
-
             cryptoListViewModel.loadData()
             binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0))
             Handler(Looper.getMainLooper()).postDelayed({
