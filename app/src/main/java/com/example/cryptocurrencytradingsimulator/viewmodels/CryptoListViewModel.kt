@@ -48,7 +48,7 @@ class CryptoListViewModel @Inject constructor(
 
     fun chooseCrypto(crypto: Crypto) {
         val navigInfo = NavigEventInfo(
-            R.id.action_menu_crypto_list_to_cryptoFragment,
+            R.id.action_menu_crypto_list_to_cryptoTabsFragment,
             arrayListOf(Pair("cryptoId", crypto.id!!))
         )
         _navigateToFragment.value = NavigEvent(navigInfo)

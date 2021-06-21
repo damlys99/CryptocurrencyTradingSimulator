@@ -51,18 +51,14 @@ import kotlin.math.sign
 @AndroidEntryPoint
 class CryptoFragment : BaseFragment() {
 
-    private val mArgs: CryptoFragmentArgs by navArgs()
-
-    @Inject
-    lateinit var cryptoViewModelFactory: CryptoViewModelFactory
     val lineEntries: ArrayList<Entry> = arrayListOf()
     val lineDataSet: LineDataSet = LineDataSet(lineEntries, "Price")
     val lineData: LineData = LineData(lineDataSet)
     var first: Long = 1000000000000L
-    val cryptoViewModel: CryptoViewModel by activityViewModels {
-        CryptoViewModel.provideFactory(cryptoViewModelFactory, mArgs.cryptoId)
-    }
-
+    private val mArgs: CryptoTabsFragmentArgs by navArgs()
+    @Inject
+    lateinit var cryptoViewModelFactory: CryptoViewModelFactory
+    val cryptoViewModel: CryptoViewModel by viewModels({requireParentFragment()})
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,10 +71,6 @@ class CryptoFragment : BaseFragment() {
             false
         )
         cryptoViewModel.crypto.observe(viewLifecycleOwner) {
-            if (it.id!!.isNotBlank()) {
-                binding.cryptoLayout.visibility = View.VISIBLE
-                binding.loader.visibility = View.GONE
-            }
             bindUi(binding, it)
         }
 
@@ -127,22 +119,13 @@ class CryptoFragment : BaseFragment() {
     }
 
     fun bindUi(binding: CryptoFragmentBinding, crypto: Crypto) {
-        binding.cryptoName.text = crypto.name
-        binding.cryptoSymbol.text = crypto.symbol
-        GlideApp.with(requireContext()).load(crypto.image).into(binding.cryptoIcon)
         val currencyFormat = NumberFormat.getCurrencyInstance()
         currencyFormat.currency = Currency.getInstance("USD")
         currencyFormat.maximumFractionDigits = 10
-        binding.cryptoPrice.text = currencyFormat.format(crypto.current_price)
         val percentFormat = NumberFormat.getPercentInstance()
         percentFormat.maximumFractionDigits = 2
         percentFormat.minimumFractionDigits = 2
-        binding.cryptoPriceChange.text =
-            percentFormat.format(crypto.price_change_percentage_24h_in_currency!! / 100)
-        when (sign(crypto.price_change_percentage_24h_in_currency)) {
-            1.0 -> binding.cryptoPriceChange.setTextColor(Color.GREEN)
-            -1.0 -> binding.cryptoPriceChange.setTextColor(Color.RED)
-        }
+
         binding.cryptoAdditionalInfo.caiMarketCap.text = crypto.market_cap
         binding.cryptoAdditionalInfo.cai24High.text = currencyFormat.format(crypto.high_24h)
         binding.cryptoAdditionalInfo.cai24Low.text = currencyFormat.format(crypto.low_24h)
