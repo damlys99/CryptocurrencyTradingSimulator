@@ -12,15 +12,13 @@ import com.example.cryptocurrencytradingsimulator.data.Repository
 import com.example.cryptocurrencytradingsimulator.data.api.ApiRepository
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
 import com.example.cryptocurrencytradingsimulator.data.models.CryptoChartData
+import com.example.cryptocurrencytradingsimulator.data.models.Transaction
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.internal.aggregatedroot.codegen._com_example_cryptocurrencytradingsimulator_MainApplication
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneId
@@ -33,6 +31,7 @@ class CryptoViewModel @AssistedInject constructor(
 ): BaseViewModel() {
     val crypto: MutableLiveData<Crypto> = MutableLiveData()
     val chartData: MutableLiveData<CryptoChartData> = MutableLiveData()
+    val transactions: MutableLiveData<List<Transaction>> = MutableLiveData()
 
     init{
         viewModelScope.launch(CoroutineExceptionHandler { _, exception ->
@@ -43,6 +42,7 @@ class CryptoViewModel @AssistedInject constructor(
             }
         }
         getChartData("1D")
+        getTransactions()
     }
 
     companion object {
@@ -93,6 +93,13 @@ class CryptoViewModel @AssistedInject constructor(
                     ).toEpochSecond()
                 ))
             }
+        }
+    }
+
+    fun getTransactions() {
+        GlobalScope.async {
+            transactions.postValue(listOf(Transaction(0, "", 0.0, 0.0, 0.0 ,0.0,0, 0)) + repository.getTransactions(cryptoId))
+            Log.e("ID", cryptoId)
         }
     }
 

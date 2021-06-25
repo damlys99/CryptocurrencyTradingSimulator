@@ -14,7 +14,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.example.cryptocurrencytradingsimulator.R
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
-import com.example.cryptocurrencytradingsimulator.databinding.CryptoFragmentBinding
 import com.example.cryptocurrencytradingsimulator.databinding.CryptoTabsFragmentBinding
 import com.example.cryptocurrencytradingsimulator.di.GlideApp
 import com.example.cryptocurrencytradingsimulator.ui.adapters.ViewPagerAdapter
@@ -23,7 +22,6 @@ import com.example.cryptocurrencytradingsimulator.viewmodels.CryptoViewModelFact
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.crypto_fragment.view.*
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -54,17 +52,23 @@ class CryptoTabsFragment : Fragment() {
 
         val tabLayout = binding.cryptoTabLayout
         val viewPager = binding.pager
+        viewPager.isUserInputEnabled = false
         viewPager.adapter = ViewPagerAdapter(this)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = "OBJECT ${(position + 1)}"
+            if(position == 0 ){
+                tab.text = getString(R.string.tab_info)
+            }
+            else{
+                tab.text = getString(R.string.tab_actions)
+            }
         }.attach()
 
 
 
         cryptoViewModel.crypto.observe(viewLifecycleOwner) {
             if (it.id!!.isNotBlank()) {
-                binding.cryptoLayout!!.visibility = View.VISIBLE
-                binding.loader!!.visibility = View.GONE
+                binding.cryptoLayout.visibility = View.VISIBLE
+                binding.loader.visibility = View.GONE
             }
             bindUi(binding, it)
         }

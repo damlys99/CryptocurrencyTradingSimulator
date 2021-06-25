@@ -6,6 +6,7 @@ import com.example.cryptocurrencytradingsimulator.data.AppDatabase
 import com.example.cryptocurrencytradingsimulator.data.Repository
 import com.example.cryptocurrencytradingsimulator.data.api.ApiService
 import com.example.cryptocurrencytradingsimulator.data.dao.FavoriteDao
+import com.example.cryptocurrencytradingsimulator.data.dao.TransactionDao
 import com.example.cryptocurrencytradingsimulator.utils.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -60,6 +61,11 @@ object AppModule{
     @Provides
     fun provideFavoriteDao(appDatabase: AppDatabase): FavoriteDao {
         return appDatabase.favoriteDao()
+    }
+
+    @Provides
+    fun provideTransactionDao(appDatabase: AppDatabase): TransactionDao{
+        return appDatabase.transactionDao()
     }
 
 }

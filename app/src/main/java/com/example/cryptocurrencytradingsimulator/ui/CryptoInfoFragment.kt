@@ -17,7 +17,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.cryptocurrencytradingsimulator.MainApplication
 import com.example.cryptocurrencytradingsimulator.R
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
-import com.example.cryptocurrencytradingsimulator.databinding.CryptoFragmentBinding
+import com.example.cryptocurrencytradingsimulator.databinding.CryptoInfoFragmentBinding
 import com.example.cryptocurrencytradingsimulator.di.GlideApp
 import com.example.cryptocurrencytradingsimulator.notifications.NotificationService
 import com.example.cryptocurrencytradingsimulator.ui.base.BaseFragment
@@ -36,7 +36,7 @@ import com.github.mikephil.charting.utils.MPPointF
 import com.github.mikephil.charting.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.chart_marker.view.*
-import kotlinx.android.synthetic.main.crypto_fragment.view.*
+import kotlinx.android.synthetic.main.crypto_info_fragment.view.*
 import kotlinx.android.synthetic.main.crypto_list_fragment.*
 import java.text.NumberFormat
 import java.time.Instant
@@ -49,24 +49,21 @@ import kotlin.math.sign
 
 
 @AndroidEntryPoint
-class CryptoFragment : BaseFragment() {
+class CryptoInfoFragment : BaseFragment() {
 
     val lineEntries: ArrayList<Entry> = arrayListOf()
     val lineDataSet: LineDataSet = LineDataSet(lineEntries, "Price")
     val lineData: LineData = LineData(lineDataSet)
     var first: Long = 1000000000000L
-    private val mArgs: CryptoTabsFragmentArgs by navArgs()
-    @Inject
-    lateinit var cryptoViewModelFactory: CryptoViewModelFactory
     val cryptoViewModel: CryptoViewModel by viewModels({requireParentFragment()})
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = DataBindingUtil.inflate<CryptoFragmentBinding>(
+        val binding = DataBindingUtil.inflate<CryptoInfoFragmentBinding>(
             inflater,
-            R.layout.crypto_fragment,
+            R.layout.crypto_info_fragment,
             container,
             false
         )
@@ -118,7 +115,7 @@ class CryptoFragment : BaseFragment() {
         return binding.root
     }
 
-    fun bindUi(binding: CryptoFragmentBinding, crypto: Crypto) {
+    fun bindUi(binding: CryptoInfoFragmentBinding, crypto: Crypto) {
         val currencyFormat = NumberFormat.getCurrencyInstance()
         currencyFormat.currency = Currency.getInstance("USD")
         currencyFormat.maximumFractionDigits = 10

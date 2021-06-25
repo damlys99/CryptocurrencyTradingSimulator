@@ -22,4 +22,17 @@
     <string name="menu_search">Search</string>
     <string name="tab_favorite">Favorite</string>
     <string name="tab_all">All</string>
+    <string name="tab_info">Info</string>
+    <string name="tab_actions">Actions</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="setNotificationLabel">"Notify when price reaches "</string>
+    <string name="setNotificationButton">Set</string>
+    <string name="currentlySetNotification">Currently set notification:</string>
+    <string name="currentlyOwned">Currently owned %1$s worth %2$s</string>
+    <string name="headerIncome">Income</string>
+    <string name="headerQuantity">Quantity</string>
+    <string name="headerPrice">Price</string>
+    <string name="headerBalance">Balance</string>
+    <string name="headerOwned">Owned</string>
+    <string name="headerDate">Date</string>
 </resources>
