@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.cryptocurrencytradingsimulator.BuildConfig
 import com.example.cryptocurrencytradingsimulator.data.AppDatabase
-import com.example.cryptocurrencytradingsimulator.data.Repository
 import com.example.cryptocurrencytradingsimulator.data.api.ApiService
 import com.example.cryptocurrencytradingsimulator.data.dao.FavoriteDao
 import com.example.cryptocurrencytradingsimulator.data.dao.OwnedDao
@@ -20,7 +19,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.text.NumberFormat
 import javax.inject.Singleton
 
 @Module

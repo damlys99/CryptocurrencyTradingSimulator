@@ -1,17 +1,14 @@
 package com.example.cryptocurrencytradingsimulator.ui
 
 import android.graphics.Color
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import androidx.viewpager2.widget.ViewPager2
 import com.example.cryptocurrencytradingsimulator.R
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
 import com.example.cryptocurrencytradingsimulator.databinding.CryptoTabsFragmentBinding
@@ -19,7 +16,6 @@ import com.example.cryptocurrencytradingsimulator.di.GlideApp
 import com.example.cryptocurrencytradingsimulator.ui.adapters.ViewPagerAdapter
 import com.example.cryptocurrencytradingsimulator.viewmodels.CryptoViewModel
 import com.example.cryptocurrencytradingsimulator.viewmodels.CryptoViewModelFactory
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.NumberFormat

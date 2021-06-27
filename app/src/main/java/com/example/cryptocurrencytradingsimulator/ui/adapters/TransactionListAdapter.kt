@@ -1,37 +1,22 @@
 package com.example.cryptocurrencytradingsimulator.ui.adapters
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Color.GREEN
-import android.graphics.Color.RED
-import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptocurrencytradingsimulator.R
-import com.example.cryptocurrencytradingsimulator.data.api.ApiRepository
-import com.example.cryptocurrencytradingsimulator.data.models.Crypto
-import com.example.cryptocurrencytradingsimulator.data.models.Favorite
 import com.example.cryptocurrencytradingsimulator.data.models.Transaction
 import com.example.cryptocurrencytradingsimulator.data.models.TransactionType
-import com.example.cryptocurrencytradingsimulator.di.GlideApp
-import kotlinx.android.synthetic.main.transaction_list_item.view.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
-import java.lang.Character.toLowerCase
 import java.text.NumberFormat
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
-import javax.inject.Inject
-import kotlin.math.sign
 
 class TransactionListAdapter internal constructor(private val context: Context): ListAdapter<Transaction, TransactionListAdapter.TransactionListViewHolder>(TransactionDiffCallback()) {
 

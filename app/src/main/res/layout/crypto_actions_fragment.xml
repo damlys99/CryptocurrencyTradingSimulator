@@ -78,18 +78,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/additionalInfoCardView">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
 
                 <LinearLayout
                     android:id="@+id/linearLayout3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/currentlyOwned"
@@ -104,10 +103,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="8dp"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/linearLayout3">
+                    android:orientation="vertical">
 
                     <RadioGroup
                         android:id="@+id/buySellGroup"
@@ -117,16 +113,16 @@
                         android:orientation="horizontal">
 
                         <RadioButton
-                            style="@style/radio_buttons"
                             android:id="@+id/radioBuy"
+                            style="@style/radio_buttons"
                             android:layout_width="50dp"
                             android:background="@drawable/custom_radio_button_selector_left"
                             android:checked="true"
                             android:text="@string/buy" />
 
                         <RadioButton
-                            style="@style/radio_buttons"
                             android:id="@+id/radioSell"
+                            style="@style/radio_buttons"
                             android:layout_width="50dp"
                             android:background="@drawable/custom_radio_button_selector_right"
                             android:text="@string/sell" />
@@ -218,82 +214,71 @@
 
                 </LinearLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="41dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/buySellLayout">
+                    android:layout_marginTop="24dp">
 
-                    <HorizontalScrollView
+                    <androidx.cardview.widget.CardView
+                        style="@style/card_views"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        android:layout_height="match_parent">
 
-                        <androidx.cardview.widget.CardView
-                            style="@style/card_views"
+                        <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
 
-                            <LinearLayout
+                            <androidx.cardview.widget.CardView
+                                style="@style/additional_info_card_view"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical">
+                                android:layout_height="wrap_content">
 
-                                <androidx.cardview.widget.CardView
-                                    style="@style/additional_info_card_view"
+                                <LinearLayout
+                                    android:id="@+id/headerLinearLayout"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content">
 
-                                    <LinearLayout
-                                        android:id="@+id/headerLinearLayout"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content">
+                                    <TextView
+                                        android:id="@+id/headerIncome"
+                                        style="@style/list_header" />
 
-                                        <TextView
-                                            android:id="@+id/headerIncome"
-                                            style="@style/list_header" />
+                                    <TextView
+                                        android:id="@+id/headerAmount"
+                                        style="@style/list_header" />
 
-                                        <TextView
-                                            android:id="@+id/headerAmount"
-                                            style="@style/list_header" />
+                                    <TextView
+                                        android:id="@+id/headerPrice"
+                                        style="@style/list_header" />
 
-                                        <TextView
-                                            android:id="@+id/headerPrice"
-                                            style="@style/list_header" />
+                                    <TextView
+                                        android:id="@+id/headerBalance"
+                                        style="@style/list_header" />
 
-                                        <TextView
-                                            android:id="@+id/headerBalance"
-                                            style="@style/list_header" />
+                                    <TextView
+                                        android:id="@+id/headerOwned"
+                                        style="@style/list_header" />
 
-                                        <TextView
-                                            android:id="@+id/headerOwned"
-                                            style="@style/list_header" />
+                                    <TextView
+                                        android:id="@+id/headerDate"
+                                        style="@style/list_header" />
 
-                                        <TextView
-                                            android:id="@+id/headerDate"
-                                            style="@style/list_header" />
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
 
-                                    </LinearLayout>
-                                </androidx.cardview.widget.CardView>
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/transactionList"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                                tools:list-item="@layout/transaction_list_item" />
+                        </LinearLayout>
 
-                                <androidx.recyclerview.widget.RecyclerView
-                                    android:id="@+id/transactionList"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                                    tools:list-item="@layout/transaction_list_item" />
-                            </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </HorizontalScrollView>
 
-                        </androidx.cardview.widget.CardView>
-                    </HorizontalScrollView>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>

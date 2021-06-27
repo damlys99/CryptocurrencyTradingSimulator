@@ -5,21 +5,17 @@ import android.graphics.Color.RED
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptocurrencytradingsimulator.R
-import com.example.cryptocurrencytradingsimulator.data.api.ApiRepository
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
-import com.example.cryptocurrencytradingsimulator.data.models.Favorite
 import com.example.cryptocurrencytradingsimulator.di.GlideApp
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import java.lang.Character.toLowerCase
 import java.text.NumberFormat
 import java.util.*
-import javax.inject.Inject
 import kotlin.math.sign
 
 class CryptoListAdapter internal constructor(private val listener: CryptoItemClickListener, private val favoriteListener: FavoriteItemClickListener):

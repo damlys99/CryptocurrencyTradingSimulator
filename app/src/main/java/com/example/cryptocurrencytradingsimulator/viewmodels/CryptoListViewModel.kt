@@ -1,17 +1,14 @@
 package com.example.cryptocurrencytradingsimulator.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.cryptocurrencytradingsimulator.R
-import com.example.cryptocurrencytradingsimulator.data.Repository
 import com.example.cryptocurrencytradingsimulator.data.api.ApiRepository
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
 import com.example.cryptocurrencytradingsimulator.data.models.Favorite
 import com.example.cryptocurrencytradingsimulator.ui.base.NavigEvent
 import com.example.cryptocurrencytradingsimulator.ui.base.NavigEventInfo
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject

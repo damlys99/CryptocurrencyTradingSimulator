@@ -2,21 +2,21 @@ package com.example.cryptocurrencytradingsimulator.viewmodels
 
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.core.content.res.TypedArrayUtils.getString
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.cryptocurrencytradingsimulator.MainApplication
 import com.example.cryptocurrencytradingsimulator.R
-import com.example.cryptocurrencytradingsimulator.data.Repository
 import com.example.cryptocurrencytradingsimulator.data.api.ApiRepository
 import com.example.cryptocurrencytradingsimulator.data.models.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.internal.aggregatedroot.codegen._com_example_cryptocurrencytradingsimulator_MainApplication
 import kotlinx.coroutines.*
-import java.time.*
-import javax.inject.Inject
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 class CryptoViewModel @AssistedInject constructor(
     private val repository: ApiRepository,

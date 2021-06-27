@@ -1,7 +1,6 @@
 package com.example.cryptocurrencytradingsimulator.ui
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Color.*
 import android.os.Bundle
 import android.util.Log
@@ -11,18 +10,13 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
-import com.example.cryptocurrencytradingsimulator.MainApplication
 import com.example.cryptocurrencytradingsimulator.R
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
 import com.example.cryptocurrencytradingsimulator.databinding.CryptoInfoFragmentBinding
-import com.example.cryptocurrencytradingsimulator.di.GlideApp
 import com.example.cryptocurrencytradingsimulator.notifications.NotificationService
 import com.example.cryptocurrencytradingsimulator.ui.base.BaseFragment
 import com.example.cryptocurrencytradingsimulator.viewmodels.CryptoViewModel
-import com.example.cryptocurrencytradingsimulator.viewmodels.CryptoViewModelFactory
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.MarkerView
@@ -35,17 +29,13 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
 import com.github.mikephil.charting.utils.Utils
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.chart_marker.view.*
 import kotlinx.android.synthetic.main.crypto_info_fragment.view.*
-import kotlinx.android.synthetic.main.crypto_list_fragment.*
 import java.text.NumberFormat
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
-import javax.inject.Inject
-import kotlin.math.sign
 
 
 @AndroidEntryPoint
@@ -137,10 +127,10 @@ class CryptoInfoFragment : BaseFragment() {
 
     fun setChart(elem: LineChart) {
         Utils.init(context)
-        lineDataSet.setColor(BLACK)
+        lineDataSet.color = BLACK
         lineDataSet.setDrawCircles(false)
         lineDataSet.setDrawHighlightIndicators(true)
-        lineDataSet.setHighLightColor(RED);
+        lineDataSet.highLightColor = RED
         lineDataSet.setDrawFilled(true)
         lineDataSet.fillColor = BLUE
         lineDataSet.setDrawValues(false)
@@ -148,7 +138,7 @@ class CryptoInfoFragment : BaseFragment() {
 
 //        elem.description.setText("Price in last 12 days");
 //        elem.description.setTextSize(12F);
-        elem.animateY(1000);
+        elem.animateY(1000)
 //        elem.getXAxis().setGranularityEnabled(true);
 //        elem.getXAxis().setGranularity(1.0f);
         //elem.xAxis.labelCount = lineDataSet.entryCount;
@@ -167,7 +157,7 @@ class CryptoInfoFragment : BaseFragment() {
         elem.setDrawMarkers(true)
         elem.marker = YourMarkerView(context, R.layout.chart_marker)
         elem.setTouchEnabled(true)
-        elem.setScaleEnabled(false);
+        elem.setScaleEnabled(false)
     }
     //class MyXAxisValueFormatter(): IAxisValueFormatter {
 //    override fun getFormattedValue(value: Float, axis: AxisBase?): String {
@@ -187,7 +177,7 @@ class CryptoInfoFragment : BaseFragment() {
 
 
 class YourMarkerView(context: Context?, layoutResource: Int) : MarkerView(context, layoutResource) {
-    private var tvContent: TextView? = findViewById(R.id.tvContent) as TextView
+    private var tvContent: TextView? = findViewById<TextView>(R.id.tvContent)
 
     override fun refreshContent(e: Entry, highlight: Highlight) {
         tvContent!!.text = e.y.toString()

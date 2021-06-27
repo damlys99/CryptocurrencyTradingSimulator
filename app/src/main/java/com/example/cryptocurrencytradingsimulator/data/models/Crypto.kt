@@ -1,7 +1,5 @@
 package com.example.cryptocurrencytradingsimulator.data.models
 
-import java.time.LocalDateTime
-
 data class Crypto(
     val id : String? = "",
     val symbol: String? = "",

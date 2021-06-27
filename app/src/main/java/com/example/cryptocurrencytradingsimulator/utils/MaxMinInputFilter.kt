@@ -2,8 +2,6 @@ package com.example.cryptocurrencytradingsimulator.utils
 
 import android.text.InputFilter
 import android.text.Spanned
-import android.util.Log
-import java.lang.NumberFormatException
 
 class MaxMinInputFilter(private val min: Double, private val max: Double): InputFilter {
     override fun filter(

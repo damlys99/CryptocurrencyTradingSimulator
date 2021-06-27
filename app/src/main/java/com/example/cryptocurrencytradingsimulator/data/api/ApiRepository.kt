@@ -1,7 +1,5 @@
 package com.example.cryptocurrencytradingsimulator.data.api
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import com.example.cryptocurrencytradingsimulator.data.dao.FavoriteDao
 import com.example.cryptocurrencytradingsimulator.data.dao.OwnedDao
 import com.example.cryptocurrencytradingsimulator.data.dao.TransactionDao

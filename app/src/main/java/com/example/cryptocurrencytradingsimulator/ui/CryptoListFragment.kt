@@ -3,14 +3,11 @@ package com.example.cryptocurrencytradingsimulator.ui
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.*
-import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.example.cryptocurrencytradingsimulator.R
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
 import com.example.cryptocurrencytradingsimulator.databinding.CryptoListFragmentBinding
@@ -19,14 +16,12 @@ import com.example.cryptocurrencytradingsimulator.ui.adapters.CryptoListAdapter
 import com.example.cryptocurrencytradingsimulator.ui.adapters.FavoriteItemClickListener
 import com.example.cryptocurrencytradingsimulator.ui.base.BaseFragment
 import com.example.cryptocurrencytradingsimulator.viewmodels.CryptoListViewModel
-import com.example.cryptocurrencytradingsimulator.viewmodels.CryptoViewModel
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class CryptoListFragment() : BaseFragment(), CryptoItemClickListener, FavoriteItemClickListener, SearchView.OnQueryTextListener {
+class CryptoListFragment : BaseFragment(), CryptoItemClickListener, FavoriteItemClickListener, SearchView.OnQueryTextListener {
 
     lateinit var adapter: CryptoListAdapter
     lateinit var searchView: SearchView
