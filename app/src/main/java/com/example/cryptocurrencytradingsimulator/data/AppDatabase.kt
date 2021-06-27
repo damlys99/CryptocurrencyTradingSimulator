@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.cryptocurrencytradingsimulator.data.dao.FavoriteDao
+import com.example.cryptocurrencytradingsimulator.data.dao.OwnedDao
 import com.example.cryptocurrencytradingsimulator.data.dao.TransactionDao
 import com.example.cryptocurrencytradingsimulator.data.models.Favorite
+import com.example.cryptocurrencytradingsimulator.data.models.Owned
 import com.example.cryptocurrencytradingsimulator.data.models.Transaction
 import com.example.cryptocurrencytradingsimulator.utils.DATABASE_NAME
 import kotlinx.coroutines.Dispatchers
@@ -14,13 +16,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Database(
-    entities = [Favorite::class, Transaction::class], version = 2, exportSchema = false
+    entities = [Favorite::class, Transaction::class, Owned::class], version = 7, exportSchema = false
 )
 
 abstract class AppDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao
     abstract fun transactionDao(): TransactionDao
-
+    abstract  fun ownedDao(): OwnedDao
     companion object {
         // For Singleton instantiation
         @Volatile
@@ -50,6 +52,7 @@ abstract class AppDatabase : RoomDatabase() {
                 withContext(Dispatchers.IO) {
                     val todoDao: FavoriteDao = db.favoriteDao()
                     val transactionDao: TransactionDao = db.transactionDao()
+                    val ownedDao: OwnedDao = db.ownedDao()
                 }
             }
         }

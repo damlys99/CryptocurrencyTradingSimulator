@@ -86,7 +86,7 @@ class CryptoListAdapter internal constructor(private val listener: CryptoItemCli
 
             val currencyFormat = NumberFormat.getCurrencyInstance()
             currencyFormat.currency = Currency.getInstance("USD")
-            currencyFormat.maximumFractionDigits = 10
+            currencyFormat.maximumFractionDigits = 8
             price.text = currencyFormat.format(currentCryptoListItem.current_price)
 
             val percentFormat = NumberFormat.getPercentInstance()

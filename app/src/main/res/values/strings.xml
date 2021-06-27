@@ -30,9 +30,11 @@
     <string name="currentlySetNotification">Currently set notification:</string>
     <string name="currentlyOwned">Currently owned %1$s worth %2$s</string>
     <string name="headerIncome">Income</string>
-    <string name="headerQuantity">Quantity</string>
+    <string name="headerAmount">Amount</string>
     <string name="headerPrice">Price</string>
     <string name="headerBalance">Balance</string>
     <string name="headerOwned">Owned</string>
     <string name="headerDate">Date</string>
+    <string name="buy">Buy</string>
+    <string name="sell">Sell</string>
 </resources>

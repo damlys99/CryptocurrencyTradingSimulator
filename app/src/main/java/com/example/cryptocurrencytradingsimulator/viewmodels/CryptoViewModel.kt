@@ -1,39 +1,35 @@
 package com.example.cryptocurrencytradingsimulator.viewmodels
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.core.content.res.TypedArrayUtils.getString
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.cryptocurrencytradingsimulator.MainApplication
 import com.example.cryptocurrencytradingsimulator.R
 import com.example.cryptocurrencytradingsimulator.data.Repository
 import com.example.cryptocurrencytradingsimulator.data.api.ApiRepository
-import com.example.cryptocurrencytradingsimulator.data.models.Crypto
-import com.example.cryptocurrencytradingsimulator.data.models.CryptoChartData
-import com.example.cryptocurrencytradingsimulator.data.models.Transaction
+import com.example.cryptocurrencytradingsimulator.data.models.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.internal.aggregatedroot.codegen._com_example_cryptocurrencytradingsimulator_MainApplication
 import kotlinx.coroutines.*
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
+import java.time.*
 import javax.inject.Inject
 
 class CryptoViewModel @AssistedInject constructor(
     private val repository: ApiRepository,
+    private val sharedPreferences: SharedPreferences,
     @Assisted private val cryptoId: String
-): BaseViewModel() {
+) : BaseViewModel() {
     val crypto: MutableLiveData<Crypto> = MutableLiveData()
     val chartData: MutableLiveData<CryptoChartData> = MutableLiveData()
     val transactions: MutableLiveData<List<Transaction>> = MutableLiveData()
+    var money: MutableLiveData<Float> = MutableLiveData(sharedPreferences.getFloat("money", 0F))
+    val owned: MutableLiveData<Owned> = MutableLiveData()
 
-    init{
+    init {
         viewModelScope.launch(CoroutineExceptionHandler { _, exception ->
             Log.d("EXCEPTION", exception.toString())
         }) {
@@ -43,11 +39,12 @@ class CryptoViewModel @AssistedInject constructor(
         }
         getChartData("1D")
         getTransactions()
+        getOwned()
     }
 
     companion object {
         fun provideFactory(
-            assistedFactory:CryptoViewModelFactory,
+            assistedFactory: CryptoViewModelFactory,
             cryptoId: String
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -57,7 +54,19 @@ class CryptoViewModel @AssistedInject constructor(
         }
     }
 
-    fun getChartData(interval: String){
+    fun getOwned() {
+        GlobalScope.async {
+            owned.postValue(Owned(-1, cryptoId, 0.0))
+            val ownd = repository.getOwned(cryptoId)
+            if (ownd == null) {
+                owned.postValue(Owned(-1, cryptoId, 0.0))
+            } else {
+                owned.postValue(ownd)
+            }
+        }
+    }
+
+    fun getChartData(interval: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 val toLDT = LocalDateTime.now()
@@ -85,25 +94,88 @@ class CryptoViewModel @AssistedInject constructor(
                         ZoneId.systemDefault()
                     ).toEpochSecond().toString()
                 )
-                chartData.postValue(repository.getHistoricalData(
-                    cryptoId,
-                    fromLDT.atZone(ZoneId.systemDefault()).toEpochSecond(),
-                    toLDT.atZone(
-                        ZoneId.systemDefault()
-                    ).toEpochSecond()
-                ))
+                chartData.postValue(
+                    repository.getHistoricalData(
+                        cryptoId,
+                        fromLDT.atZone(ZoneId.systemDefault()).toEpochSecond(),
+                        toLDT.atZone(
+                            ZoneId.systemDefault()
+                        ).toEpochSecond()
+                    )
+                )
             }
         }
     }
 
     fun getTransactions() {
         GlobalScope.async {
-            transactions.postValue(listOf(Transaction(0, "", 0.0, 0.0, 0.0 ,0.0,0, 0)) + repository.getTransactions(cryptoId))
-            Log.e("ID", cryptoId)
+            transactions.postValue(repository.getTransactions(cryptoId))
         }
     }
 
+    fun buyCrypto(value: Double, amount: Double) {
+        GlobalScope.async {
+            val ownd = repository.getOwned(cryptoId)
+            if (ownd != null) {
+                ownd.amount += amount
+                repository.ownedDao.update(ownd)
+            } else {
+                repository.ownedDao.insert(Owned(cryptoId = cryptoId, amount = amount))
+            }
+            val newMoney = (money.value!! - value).toFloat()
+            owned.postValue(repository.getOwned(cryptoId))
+            sharedPreferences.edit().putFloat("money", newMoney).apply()
+            money.postValue(sharedPreferences.getFloat ("money", 0F))
+            repository.transactionDao.insert(
+                Transaction(
+                    type = TransactionType.BUY,
+                    cryptoId = cryptoId,
+                    income = -value,
+                    quantity = amount,
+                    price = crypto.value!!.current_price!!,
+                    balance = newMoney.toDouble(),
+                    owned = owned.value!!.amount,
+                    date = Instant.now().epochSecond
+                )
+            )
+            getTransactions()
+            transactions.postValue(transactions.value)
+        }
+
+
+    }
+    fun sellCrypto(value: Double, amount: Double) {
+        GlobalScope.async {
+            val ownd = repository.getOwned(cryptoId)
+            if (ownd != null) {
+                ownd.amount -= amount
+                repository.ownedDao.update(ownd)
+            }
+            owned.postValue(repository.getOwned(cryptoId))
+            val newMoney = (money.value!! + value).toFloat()
+            sharedPreferences.edit().putFloat("money", newMoney).apply()
+            money.postValue(sharedPreferences.getFloat("money", 0F))
+            repository.transactionDao.insert(
+                Transaction(
+                    type = TransactionType.SELL,
+                    cryptoId = cryptoId,
+                    income = value,
+                    quantity = amount,
+                    price = crypto.value!!.current_price!!,
+                    balance = newMoney.toDouble(),
+                    owned = owned.value!!.amount,
+                    date = Instant.now().epochSecond
+                )
+            )
+            getTransactions()
+            transactions.postValue(transactions.value)
+        }
+
+
+    }
+
 }
+
 @AssistedFactory
 interface CryptoViewModelFactory {
     fun create(cryptoId: String): CryptoViewModel

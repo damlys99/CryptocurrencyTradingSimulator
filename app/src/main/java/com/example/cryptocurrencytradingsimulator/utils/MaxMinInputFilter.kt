@@ -16,14 +16,13 @@ class MaxMinInputFilter(private val min: Double, private val max: Double): Input
     ): CharSequence? {
         try {
             val input = (dest.toString() + source.toString()).toDouble()
-            Log.e("aa", input.toString())
-            if (isInRange(min, max, input))
-                return null;
+            if (isInRange(min, max, input) || input == 0.0)
+                return null
         } catch (nfe: NumberFormatException) { }
-        return "";
+        return ""
     }
 
     private fun isInRange(a: Double, b: Double, c: Double): Boolean {
-        return c in a..b
+        return (c in a..b)
     }
 }

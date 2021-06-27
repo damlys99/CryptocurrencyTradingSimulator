@@ -20,7 +20,7 @@
                 style="@style/list_item" />
 
             <TextView
-                android:id="@+id/itemQuantity"
+                android:id="@+id/itemAmount"
                 style="@style/list_item" />
 
             <TextView

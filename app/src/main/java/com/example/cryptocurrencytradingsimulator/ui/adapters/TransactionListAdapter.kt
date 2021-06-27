@@ -1,6 +1,7 @@
 package com.example.cryptocurrencytradingsimulator.ui.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Color.GREEN
 import android.graphics.Color.RED
 import android.graphics.Typeface
@@ -16,6 +17,7 @@ import com.example.cryptocurrencytradingsimulator.data.api.ApiRepository
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
 import com.example.cryptocurrencytradingsimulator.data.models.Favorite
 import com.example.cryptocurrencytradingsimulator.data.models.Transaction
+import com.example.cryptocurrencytradingsimulator.data.models.TransactionType
 import com.example.cryptocurrencytradingsimulator.di.GlideApp
 import kotlinx.android.synthetic.main.transaction_list_item.view.*
 import kotlinx.coroutines.GlobalScope
@@ -23,6 +25,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.lang.Character.toLowerCase
 import java.text.NumberFormat
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.sign
@@ -31,48 +37,50 @@ class TransactionListAdapter internal constructor(private val context: Context):
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionListViewHolder {
         val view  = LayoutInflater.from(parent.context).inflate(R.layout.transaction_list_item,parent,false)
-        return TransactionListViewHolder(view)
+        return TransactionListViewHolder(view, context)
     }
 
     override fun onBindViewHolder(holder: TransactionListViewHolder, position: Int) {
-        if(position == 0){
-            holder.itemView.itemIncome.text = context.getString(R.string.headerIncome)
-            holder.itemView.itemBalance.text = context.getString(R.string.headerBalance)
-            holder.itemView.itemPrice.text = context.getString(R.string.headerPrice)
-            holder.itemView.itemOwned.text = context.getString(R.string.headerOwned)
-            holder.itemView.itemDate.text = context.getString(R.string.headerDate)
-            holder.itemView.itemQuantity.text = context.getString(R.string.headerQuantity)
-
-            val n = holder.itemView.itemLinearLayout.childCount
-            repeat(n){
-                val elem =  holder.itemView.itemLinearLayout.getChildAt(it) as TextView
-                elem.setBackgroundColor(context.getColor(R.color.purple_200))
-                elem.setTypeface(elem.typeface, Typeface.BOLD)
-            }
-
-        }
-        else {
             val item = getItem(position)
             holder.bind(item)
-        }
-
     }
 
-    class TransactionListViewHolder constructor(itemView: View): RecyclerView.ViewHolder(itemView){
+    class TransactionListViewHolder constructor(itemView: View, private val context: Context): RecyclerView.ViewHolder(itemView){
 
         val income = itemView.findViewById<TextView>(R.id.itemIncome)
         val balance = itemView.findViewById<TextView>(R.id.itemBalance)
         val price = itemView.findViewById<TextView>(R.id.itemPrice)
         val owned = itemView.findViewById<TextView>(R.id.itemOwned)
         val date = itemView.findViewById<TextView>(R.id.itemDate)
-        val quantity = itemView.findViewById<TextView>(R.id.itemQuantity)
+        val quantity = itemView.findViewById<TextView>(R.id.itemAmount)
         fun bind(currentTransactionListItem: Transaction){
-            income.text = currentTransactionListItem.income.toString()
-            balance.text = currentTransactionListItem.balance.toString()
-            price.text = currentTransactionListItem.price.toString()
-            owned.text = currentTransactionListItem.owned.toString()
-            date.text = currentTransactionListItem.date.toString()
-            quantity.text = currentTransactionListItem.quantity.toString()
+            val currencyFormat = NumberFormat.getCurrencyInstance()
+            currencyFormat.currency = Currency.getInstance("USD")
+            currencyFormat.maximumFractionDigits = 8
+
+            val fractionFormat = NumberFormat.getInstance()
+            fractionFormat.maximumFractionDigits = 8
+
+            val formatterPattern = "yyyy-MM-dd HH:mm"
+            val formatter = DateTimeFormatter.ofPattern(formatterPattern)
+
+            income.text = currencyFormat.format(currentTransactionListItem.income)
+            balance.text = currencyFormat.format(currentTransactionListItem.balance)
+            price.text = currencyFormat.format(currentTransactionListItem.price)
+            owned.text = fractionFormat.format(currentTransactionListItem.owned)
+            date.text = formatter.format(
+                LocalDateTime.ofInstant(Instant.ofEpochSecond(currentTransactionListItem.date), ZoneId.systemDefault()))
+            quantity.text = fractionFormat.format(currentTransactionListItem.quantity)
+            if(currentTransactionListItem.type == TransactionType.BUY){
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    itemView.setBackgroundColor(context.getColor(R.color.red))
+                }
+            }
+            else{
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    itemView.setBackgroundColor(context.getColor(R.color.green))
+                }
+            }
         }
     }
 
