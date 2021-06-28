@@ -9,7 +9,11 @@
         android:id="@+id/menu_profile"
         android:name="com.example.cryptocurrencytradingsimulator.ui.ProfileFragment"
         android:label="profile_fragment"
-        tools:layout="@layout/profile_fragment" />
+        tools:layout="@layout/profile_fragment" >
+        <action
+            android:id="@+id/action_menu_profile_to_cryptoTabsFragment"
+            app:destination="@id/cryptoTabsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/menu_achievements"
         android:name="com.example.cryptocurrencytradingsimulator.ui.AchievementsFragment"

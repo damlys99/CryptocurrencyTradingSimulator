@@ -26,6 +26,7 @@ import com.example.cryptocurrencytradingsimulator.ui.adapters.TransactionListAda
 import com.example.cryptocurrencytradingsimulator.ui.base.BaseFragment
 import com.example.cryptocurrencytradingsimulator.utils.DecimalDigitsInputFilter
 import com.example.cryptocurrencytradingsimulator.utils.MaxMinInputFilter
+import com.example.cryptocurrencytradingsimulator.utils.MyFormatter
 import com.example.cryptocurrencytradingsimulator.viewmodels.CryptoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.crypto_actions_fragment.*
@@ -77,23 +78,25 @@ class CryptoActionFragment : BaseFragment() {
         }
         setListHeaders()
 
-        val currencyFormat = NumberFormat.getCurrencyInstance()
-        currencyFormat.currency = Currency.getInstance("USD")
-        currencyFormat.maximumFractionDigits = 8
-
-        val fractionFormat = NumberFormat.getInstance()
-        fractionFormat.maximumFractionDigits = 8
-
-
         price = cryptoViewModel.crypto.value!!.current_price!!
         owned = cryptoViewModel.owned
         owned.observe(viewLifecycleOwner) {
-            binding.currentlyOwned.text =
-                getString(
-                    R.string.currentlyOwned,
-                    fractionFormat.format(it.amount),
-                    currencyFormat.format(it.amount * price)
-                )
+            if (it != null) {
+                binding.currentlyOwned.text =
+                    getString(
+                        R.string.currentlyOwned,
+                        MyFormatter.double(it.amount),
+                        MyFormatter.currency(it.amount * price)
+                    )
+            }
+            else{
+                                binding.currentlyOwned.text =
+                    getString(
+                        R.string.currentlyOwned,
+                        MyFormatter.double(0),
+                        MyFormatter.currency(0)
+                    )
+            }
         }
         money = cryptoViewModel.money
 
@@ -102,7 +105,7 @@ class CryptoActionFragment : BaseFragment() {
                 maxVal = money.value!!
                 binding.buttonBuy.text = getString(R.string.buy)
             } else {
-                maxVal = (cryptoViewModel.owned.value!!.amount * price).toFloat()
+                maxVal = (owned.value!!.amount * price).toFloat()
                 binding.buttonBuy.text = getString(R.string.sell)
             }
 
@@ -169,10 +172,6 @@ class CryptoActionFragment : BaseFragment() {
     ) {
         var changedBy: EditText = etPrice
 
-        val fractionFormat = NumberFormat.getInstance()
-        fractionFormat.maximumFractionDigits = 8
-
-
         etPrice.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
@@ -190,7 +189,7 @@ class CryptoActionFragment : BaseFragment() {
                             ((s.toString().toDouble().roundToInt() / maxVal) * 1000).roundToInt()
                         sbPrice.progress = progress
                         amount = amountTemp
-                        etAmount.setText(fractionFormat.format(amount))
+                        etAmount.setText(MyFormatter.double(amount))
                     } catch (ex: Exception) {
                         etAmount.setText("")
                     }

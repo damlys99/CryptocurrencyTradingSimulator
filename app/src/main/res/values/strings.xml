@@ -37,4 +37,8 @@
     <string name="headerDate">Date</string>
     <string name="buy">Buy</string>
     <string name="sell">Sell</string>
+    <string name="account_balance">Account balance: </string>
+    <string name="ownedCrypto">Owned Cryptocurrencies</string>
+    <string name="headerWorth">Worth</string>
+    <string name="headerCrypto">Crypto</string>
 </resources>

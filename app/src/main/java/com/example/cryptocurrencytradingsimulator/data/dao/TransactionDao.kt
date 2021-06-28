@@ -9,4 +9,7 @@ interface TransactionDao: BaseDao<Transaction> {
 
     @Query("SELECT * FROM [Transaction] WHERE cryptoId=:cryptoId ORDER BY date DESC")
     fun getTransactions(cryptoId: String): List<Transaction>
+
+    @Query("SELECT * FROM [Transaction] ORDER BY DATE ASC")
+    fun getAllTransactions(): List<Transaction>
 }

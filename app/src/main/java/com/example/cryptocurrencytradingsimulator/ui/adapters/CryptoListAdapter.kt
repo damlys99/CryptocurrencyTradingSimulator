@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptocurrencytradingsimulator.R
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
 import com.example.cryptocurrencytradingsimulator.di.GlideApp
+import com.example.cryptocurrencytradingsimulator.utils.MyFormatter
 import java.text.NumberFormat
 import java.util.*
 import kotlin.math.sign
@@ -80,17 +81,11 @@ class CryptoListAdapter internal constructor(private val listener: CryptoItemCli
 
             GlideApp.with(itemView.context).load(currentCryptoListItem.image).into(imageView)
 
-            val currencyFormat = NumberFormat.getCurrencyInstance()
-            currencyFormat.currency = Currency.getInstance("USD")
-            currencyFormat.maximumFractionDigits = 8
-            price.text = currencyFormat.format(currentCryptoListItem.current_price)
+            price.text = MyFormatter.currency(currentCryptoListItem.current_price!!)
 
-            val percentFormat = NumberFormat.getPercentInstance()
-            percentFormat.maximumFractionDigits = 2
-            percentFormat.minimumFractionDigits = 2
             if(currentCryptoListItem.price_change_percentage_24h_in_currency != null) {
                 priceChange.text =
-                    percentFormat.format(currentCryptoListItem.price_change_percentage_24h_in_currency / 100)
+                    MyFormatter.percent(currentCryptoListItem.price_change_percentage_24h_in_currency / 100)
                 when (sign(currentCryptoListItem.price_change_percentage_24h_in_currency)) {
                     1.0 -> priceChange.setTextColor(GREEN)
                     -1.0 -> priceChange.setTextColor(RED)

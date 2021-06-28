@@ -2,6 +2,7 @@ package com.example.cryptocurrencytradingsimulator.data.api
 
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
 import com.example.cryptocurrencytradingsimulator.data.models.CryptoChartData
+import com.example.cryptocurrencytradingsimulator.data.models.Price
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -34,5 +35,10 @@ interface ApiService {
         @Query("to") to: Long
     ): CryptoChartData
 
+    @GET("simple/price")
+    suspend fun getPrices(
+        @Query("ids") ids: String,
+        @Query("vs_currencies") vs_currency: String
+    ): Map<String, Price>
 
 }

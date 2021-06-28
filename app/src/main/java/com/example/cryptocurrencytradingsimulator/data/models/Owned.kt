@@ -8,5 +8,6 @@ data class Owned(
     @PrimaryKey(autoGenerate = true)
     val pk: Long = 0,
     val cryptoId: String = "",
+    val cryptoName: String = "",
     var amount: Double = 0.0
 )

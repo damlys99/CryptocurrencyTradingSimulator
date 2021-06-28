@@ -9,7 +9,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ApiRepository @Inject constructor(
+class Repository @Inject constructor(
     private val apiService: ApiService,
     private val favoriteDao: FavoriteDao,
     val transactionDao: TransactionDao,
@@ -28,6 +28,8 @@ class ApiRepository @Inject constructor(
     }
 
     fun getTransactions(cryptoId: String): List<Transaction> = transactionDao.getTransactions(cryptoId)
+    fun getAllTransactions() = transactionDao.getAllTransactions()
     fun getAllOwned(): List<Owned> = ownedDao.getAllOwned()
     fun getOwned(cryptoId: String): Owned? = ownedDao.getOwned(cryptoId)
+    suspend fun getPrices(ids: String) = apiService.getPrices(ids =ids, vs_currency = "usd")
 }

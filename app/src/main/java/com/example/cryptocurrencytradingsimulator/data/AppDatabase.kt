@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Database(
-    entities = [Favorite::class, Transaction::class, Owned::class], version = 7, exportSchema = false
+    entities = [Favorite::class, Transaction::class, Owned::class], version = 8, exportSchema = false
 )
 
 abstract class AppDatabase : RoomDatabase() {

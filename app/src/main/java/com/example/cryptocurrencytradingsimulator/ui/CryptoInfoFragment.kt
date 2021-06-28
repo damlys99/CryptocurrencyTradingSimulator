@@ -16,6 +16,7 @@ import com.example.cryptocurrencytradingsimulator.data.models.Crypto
 import com.example.cryptocurrencytradingsimulator.databinding.CryptoInfoFragmentBinding
 import com.example.cryptocurrencytradingsimulator.notifications.NotificationService
 import com.example.cryptocurrencytradingsimulator.ui.base.BaseFragment
+import com.example.cryptocurrencytradingsimulator.utils.YourMarkerView
 import com.example.cryptocurrencytradingsimulator.viewmodels.CryptoViewModel
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -86,10 +87,8 @@ class CryptoInfoFragment : BaseFragment() {
         cryptoViewModel.chartData.observe(viewLifecycleOwner) { it ->
             lineEntries.clear()
             first = it!!.prices!!.first()[0].toLong()
-            //Log.d("aa", first.toString())
-            cryptoViewModel.chartData.value!!.prices!!.forEach {
+            it.prices!!.forEach {
                 lineEntries.add(Entry(((it[0].toLong() - first)).toFloat(), it[1].toFloat()))
-
             }
             lineDataSet.values = lineEntries
             lineData.removeDataSet(0)
@@ -134,61 +133,26 @@ class CryptoInfoFragment : BaseFragment() {
         lineDataSet.setDrawFilled(true)
         lineDataSet.fillColor = BLUE
         lineDataSet.setDrawValues(false)
-
-
-//        elem.description.setText("Price in last 12 days");
-//        elem.description.setTextSize(12F);
         elem.animateY(1000)
-//        elem.getXAxis().setGranularityEnabled(true);
-//        elem.getXAxis().setGranularity(1.0f);
-        //elem.xAxis.labelCount = lineDataSet.entryCount;
         elem.xAxis.position = XAxis.XAxisPosition.BOTTOM
-        elem.xAxis.valueFormatter = object : IAxisValueFormatter {
-            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+        elem.xAxis.valueFormatter =
+            IAxisValueFormatter { value, axis ->
                 val formatter = DateTimeFormatter.ofPattern("HH:mm")
-               // Log.d("aaa", (value.toLong() + (first)).toString())
-                return formatter.format(
+                // Log.d("aaa", (value.toLong() + (first)).toString())
+                formatter.format(
                     LocalDateTime.ofInstant(
                         Instant.ofEpochMilli(value.toLong() + first), ZoneId.systemDefault()
                     )
                 )
             }
-        }
         elem.setDrawMarkers(true)
         elem.marker = YourMarkerView(context, R.layout.chart_marker)
         elem.setTouchEnabled(true)
+        elem.description.isEnabled = false
+        elem.legend.isEnabled = false
         elem.setScaleEnabled(false)
     }
-    //class MyXAxisValueFormatter(): IAxisValueFormatter {
-//    override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-//        Log.d(fir)
-//        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-//        return formatter.format(LocalDateTime.ofEpochSecond(value.toLong(), 0, ZoneOffset.UTC) + first)
-//    }
-
-//}
-
-    fun onSendNotificationsButtonClick(view: View?) {
-        NotificationService.setAlarm(requireContext())
-        Log.d("AA", "bb")
-    }
 
 }
 
 
-class YourMarkerView(context: Context?, layoutResource: Int) : MarkerView(context, layoutResource) {
-    private var tvContent: TextView? = findViewById<TextView>(R.id.tvContent)
-
-    override fun refreshContent(e: Entry, highlight: Highlight) {
-        tvContent!!.text = e.y.toString()
-        super.refreshContent(e, highlight)
-    }
-
-    private var mOffset: MPPointF? = null
-    override fun getOffset(): MPPointF {
-        if (mOffset == null) {
-            mOffset = MPPointF((-(width / 2)).toFloat(), (-height).toFloat())
-        }
-        return mOffset!!
-    }
-}

@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.cryptocurrencytradingsimulator.MainApplication
 import com.example.cryptocurrencytradingsimulator.R
-import com.example.cryptocurrencytradingsimulator.data.api.ApiRepository
+import com.example.cryptocurrencytradingsimulator.data.api.Repository
 import com.example.cryptocurrencytradingsimulator.data.models.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 
 class CryptoViewModel @AssistedInject constructor(
-    private val repository: ApiRepository,
+    private val repository: Repository,
     private val sharedPreferences: SharedPreferences,
     @Assisted private val cryptoId: String
 ) : BaseViewModel() {
@@ -56,14 +56,8 @@ class CryptoViewModel @AssistedInject constructor(
 
     fun getOwned() {
         GlobalScope.async {
-            owned.postValue(Owned(-1, cryptoId, 0.0))
-            val ownd = repository.getOwned(cryptoId)
-            if (ownd == null) {
-                owned.postValue(Owned(-1, cryptoId, 0.0))
-            } else {
-                owned.postValue(ownd)
+                owned.postValue(repository.getOwned(cryptoId))
             }
-        }
     }
 
     fun getChartData(interval: String) {
@@ -89,11 +83,7 @@ class CryptoViewModel @AssistedInject constructor(
                         .getString(R.string.chart_radio_label_1y) -> fromLDT = toLDT.minusYears(1)
                     "else" -> fromLDT = toLDT
                 }
-                Log.d(
-                    fromLDT.atZone(ZoneId.systemDefault()).toEpochSecond().toString(), toLDT.atZone(
-                        ZoneId.systemDefault()
-                    ).toEpochSecond().toString()
-                )
+
                 chartData.postValue(
                     repository.getHistoricalData(
                         cryptoId,
@@ -120,7 +110,7 @@ class CryptoViewModel @AssistedInject constructor(
                 ownd.amount += amount
                 repository.ownedDao.update(ownd)
             } else {
-                repository.ownedDao.insert(Owned(cryptoId = cryptoId, amount = amount))
+                repository.ownedDao.insert(Owned(cryptoId = cryptoId, cryptoName = crypto.value!!.name!!, amount = amount))
             }
             val newMoney = (money.value!! - value).toFloat()
             owned.postValue(repository.getOwned(cryptoId))
@@ -149,9 +139,10 @@ class CryptoViewModel @AssistedInject constructor(
             val ownd = repository.getOwned(cryptoId)
             if (ownd != null) {
                 ownd.amount -= amount
-                repository.ownedDao.update(ownd)
+                if(ownd.amount != 0.0)  repository.ownedDao.update(ownd)
+                else repository.ownedDao.delete(ownd)
             }
-            owned.postValue(repository.getOwned(cryptoId))
+            getOwned()
             val newMoney = (money.value!! + value).toFloat()
             sharedPreferences.edit().putFloat("money", newMoney).apply()
             money.postValue(sharedPreferences.getFloat("money", 0F))

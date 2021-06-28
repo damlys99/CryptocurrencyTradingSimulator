@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cryptocurrencytradingsimulator.R
 import com.example.cryptocurrencytradingsimulator.data.models.Transaction
 import com.example.cryptocurrencytradingsimulator.data.models.TransactionType
+import com.example.cryptocurrencytradingsimulator.utils.MyFormatter
 import java.text.NumberFormat
 import java.time.Instant
 import java.time.LocalDateTime
@@ -39,23 +40,16 @@ class TransactionListAdapter internal constructor(private val context: Context):
         val date = itemView.findViewById<TextView>(R.id.itemDate)
         val quantity = itemView.findViewById<TextView>(R.id.itemAmount)
         fun bind(currentTransactionListItem: Transaction){
-            val currencyFormat = NumberFormat.getCurrencyInstance()
-            currencyFormat.currency = Currency.getInstance("USD")
-            currencyFormat.maximumFractionDigits = 8
-
-            val fractionFormat = NumberFormat.getInstance()
-            fractionFormat.maximumFractionDigits = 8
-
             val formatterPattern = "yyyy-MM-dd HH:mm"
             val formatter = DateTimeFormatter.ofPattern(formatterPattern)
 
-            income.text = currencyFormat.format(currentTransactionListItem.income)
-            balance.text = currencyFormat.format(currentTransactionListItem.balance)
-            price.text = currencyFormat.format(currentTransactionListItem.price)
-            owned.text = fractionFormat.format(currentTransactionListItem.owned)
+            income.text = MyFormatter.currency(currentTransactionListItem.income)
+            balance.text = MyFormatter.currency(currentTransactionListItem.balance)
+            price.text = MyFormatter.currency(currentTransactionListItem.price)
+            owned.text = MyFormatter.double(currentTransactionListItem.owned)
             date.text = formatter.format(
                 LocalDateTime.ofInstant(Instant.ofEpochSecond(currentTransactionListItem.date), ZoneId.systemDefault()))
-            quantity.text = fractionFormat.format(currentTransactionListItem.quantity)
+            quantity.text = MyFormatter.double(currentTransactionListItem.quantity)
             if(currentTransactionListItem.type == TransactionType.BUY){
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                     itemView.setBackgroundColor(context.getColor(R.color.red))

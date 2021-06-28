@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.cryptocurrencytradingsimulator.R
-import com.example.cryptocurrencytradingsimulator.data.api.ApiRepository
+import com.example.cryptocurrencytradingsimulator.data.api.Repository
 import com.example.cryptocurrencytradingsimulator.data.models.Crypto
 import com.example.cryptocurrencytradingsimulator.data.models.Favorite
 import com.example.cryptocurrencytradingsimulator.ui.base.NavigEvent
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CryptoListViewModel @Inject constructor(
-    private val apiRepository: ApiRepository
+    private val repository: Repository
     //private val repository: Repository
 ) : BaseViewModel() {
     val cryptos: MutableLiveData<List<Crypto>> = MutableLiveData(arrayListOf())
@@ -30,8 +30,8 @@ class CryptoListViewModel @Inject constructor(
     fun loadData() {
         viewModelScope.launch(handler) {
             withContext(Dispatchers.IO) {
-                val tempList = apiRepository.getAllCrypto()
-                val favorites = apiRepository.getAllFavorites()
+                val tempList = repository.getAllCrypto()
+                val favorites = repository.getAllFavorites()
                 tempList.forEach {
                     if (favorites.map { el -> el.id }.contains(it.id)) {
                         it.favorite = true
@@ -55,7 +55,7 @@ class CryptoListViewModel @Inject constructor(
     fun addOrDeleteFavorite(crypto: Crypto, isChecked: Boolean){
         crypto.favorite = isChecked
         GlobalScope.async{
-            apiRepository.addOrDeleteFavorite(isChecked, Favorite(id = crypto.id!!))
+            repository.addOrDeleteFavorite(isChecked, Favorite(id = crypto.id!!))
         }
 
     }
