@@ -2,22 +2,16 @@ package com.example.cryptocurrencytradingsimulator.ui
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.example.cryptocurrencytradingsimulator.R
 import com.example.cryptocurrencytradingsimulator.data.models.Owned
-import com.example.cryptocurrencytradingsimulator.databinding.CryptoActionsFragmentBinding
 import com.example.cryptocurrencytradingsimulator.databinding.ProfileFragmentBinding
 import com.example.cryptocurrencytradingsimulator.ui.adapters.OwnedItemClickListener
 import com.example.cryptocurrencytradingsimulator.ui.adapters.OwnedListAdapter
-import com.example.cryptocurrencytradingsimulator.ui.adapters.TransactionListAdapter
 import com.example.cryptocurrencytradingsimulator.ui.base.BaseFragment
 import com.example.cryptocurrencytradingsimulator.utils.MyFormatter
 import com.example.cryptocurrencytradingsimulator.utils.YourMarkerView
@@ -67,17 +61,17 @@ class ProfileFragment : BaseFragment(), OwnedItemClickListener {
             }
         }
         viewModel.money.observe(viewLifecycleOwner){
-            binding.accountBalance.text = MyFormatter.currency(it)
+            binding.accountBalance.text = MyFormatter.currency(it, 2)
         }
 
         val chart = binding.balanceChart
         setChart(chart)
         viewModel.chartData.observe(viewLifecycleOwner) { it ->
             lineEntries.clear()
-            if(it.size > 0 ) {
+            if(it.isNotEmpty()) {
                 first = it.first().date
                 it.forEach {
-                    lineEntries.add(Entry(((it.date - first)).toFloat(), it.balance.toFloat()))
+                    lineEntries.add(Entry((it.date - first).toFloat(), it.balance.toFloat()))
                 }
 
                 lineDataSet.values = lineEntries
@@ -95,8 +89,8 @@ class ProfileFragment : BaseFragment(), OwnedItemClickListener {
         return binding.root
     }
 
-    override fun chooseCrypto(ownedListItem: Owned) {
-        viewModel.chooseCrypto(ownedListItem)
+    override fun chooseCrypto(cryptoListItem: Owned) {
+        viewModel.chooseCrypto(cryptoListItem)
     }
 
     fun setChart(elem: LineChart) {
@@ -110,17 +104,15 @@ class ProfileFragment : BaseFragment(), OwnedItemClickListener {
         lineDataSet.setDrawValues(false)
         elem.animateY(1000)
         elem.xAxis.position = XAxis.XAxisPosition.BOTTOM
-        elem.xAxis.valueFormatter = object : IAxisValueFormatter {
-            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+        elem.xAxis.valueFormatter =
+            IAxisValueFormatter { value, _ ->
                 val formatter = DateTimeFormatter.ofPattern("MM-dd")
-                // Log.d("aaa", (value.toLong() + (first)).toString())
-                return formatter.format(
+                formatter.format(
                     LocalDateTime.ofInstant(
-                        Instant.ofEpochMilli(value.toLong() + first), ZoneId.systemDefault()
+                        Instant.ofEpochSecond(value.toLong() + first), ZoneId.systemDefault()
                     )
                 )
             }
-        }
         elem.setDrawMarkers(true)
         elem.marker = YourMarkerView(context, R.layout.chart_marker)
         elem.setTouchEnabled(true)

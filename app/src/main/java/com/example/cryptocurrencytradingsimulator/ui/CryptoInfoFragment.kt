@@ -73,7 +73,6 @@ class CryptoInfoFragment : BaseFragment() {
             binding.lineChart.xAxis.valueFormatter = object : IAxisValueFormatter {
                 override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                     val formatter = DateTimeFormatter.ofPattern(formatterPattern)
-                    // Log.d("aaa", (value.toLong() + (first)).toString())
                     return formatter.format(
                         LocalDateTime.ofInstant(
                             Instant.ofEpochMilli(value.toLong() + first), ZoneId.systemDefault()

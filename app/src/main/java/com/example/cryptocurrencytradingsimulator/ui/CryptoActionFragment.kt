@@ -21,7 +21,6 @@ import androidx.lifecycle.MutableLiveData
 import com.example.cryptocurrencytradingsimulator.R
 import com.example.cryptocurrencytradingsimulator.data.models.Owned
 import com.example.cryptocurrencytradingsimulator.databinding.CryptoActionsFragmentBinding
-import com.example.cryptocurrencytradingsimulator.notifications.NotificationService
 import com.example.cryptocurrencytradingsimulator.ui.adapters.TransactionListAdapter
 import com.example.cryptocurrencytradingsimulator.ui.base.BaseFragment
 import com.example.cryptocurrencytradingsimulator.utils.DecimalDigitsInputFilter
@@ -30,7 +29,6 @@ import com.example.cryptocurrencytradingsimulator.utils.MyFormatter
 import com.example.cryptocurrencytradingsimulator.viewmodels.CryptoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.crypto_actions_fragment.*
-import java.text.NumberFormat
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -145,13 +143,14 @@ class CryptoActionFragment : BaseFragment() {
                 }
             }
         }
+
+        notificationsObservers()
         return binding.root
     }
 
     private fun setRanges() {
         clearForm()
         maxAmount = maxVal / price
-        Log.e("AAA", maxAmount.toString())
         binding.tvPriceMin.text = 0.toString()
         binding.tvPriceMax.text = maxVal.toString()
         binding.editTextPrice.filters =
@@ -257,9 +256,48 @@ class CryptoActionFragment : BaseFragment() {
 
     }
 
+    private fun notificationsObservers(){
+        cryptoViewModel.notification.observe(viewLifecycleOwner){
+            binding.editTextNotificationPrice.clearFocus()
+            if(it != null) {
+                binding.buttonSetNotification.isChecked = true
+                binding.editTextNotificationPrice.setText(it.price.toString())
+            }
+            else{
+                binding.buttonSetNotification.isChecked = false
+                if(binding.editTextNotificationPrice.text.isEmpty()) {
+                    binding.buttonSetNotification.isEnabled = false
+                }
+            }
+        }
 
-    fun onSendNotificationsButtonClick(view: View?) {
-        NotificationService.setAlarm(requireContext())
+        binding.buttonSetNotification.setOnCheckedChangeListener{
+                _, isChecked ->
+                when (isChecked) {
+                    true -> {
+                        cryptoViewModel.setNotification(binding.editTextNotificationPrice.text.toString())
+                    }
+                    else -> cryptoViewModel.deleteNotification()
+                }
+        }
+
+        binding.editTextNotificationPrice.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                if(binding.editTextNotificationPrice.hasFocus()) {
+                    cryptoViewModel.deleteNotification()
+                    binding.buttonSetNotification.isEnabled = p0.toString().isNotEmpty()
+                }
+            }
+
+        })
     }
+
+
 
 }

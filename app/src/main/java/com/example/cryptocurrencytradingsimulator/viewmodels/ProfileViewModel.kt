@@ -39,7 +39,7 @@ class ProfileViewModel @Inject constructor(
 
 
     fun getOwnedAndPrices(){
-        GlobalScope.async(handler) {
+        GlobalScope.launch(handler) {
             val ownd = repository.getAllOwned()
             owned.postValue(ownd)
             prices.postValue(repository.getPrices(ownd.map { it.cryptoId }.joinToString(",")))
@@ -47,7 +47,6 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun chooseCrypto(owned: Owned) {
-        Log.e("S", owned.cryptoId)
         val navigInfo = NavigEventInfo(
             R.id.action_menu_profile_to_cryptoTabsFragment,
             arrayListOf(Pair("cryptoId", owned.cryptoId))
@@ -57,7 +56,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun getChartData(){
-        GlobalScope.async(handler) {
+        GlobalScope.launch(handler) {
             chartData.postValue(repository.getAllTransactions())
         }
     }

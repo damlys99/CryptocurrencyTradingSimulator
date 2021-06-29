@@ -6,6 +6,7 @@ import com.example.cryptocurrencytradingsimulator.BuildConfig
 import com.example.cryptocurrencytradingsimulator.data.AppDatabase
 import com.example.cryptocurrencytradingsimulator.data.api.ApiService
 import com.example.cryptocurrencytradingsimulator.data.dao.FavoriteDao
+import com.example.cryptocurrencytradingsimulator.data.dao.NotificationsDao
 import com.example.cryptocurrencytradingsimulator.data.dao.OwnedDao
 import com.example.cryptocurrencytradingsimulator.data.dao.TransactionDao
 import com.example.cryptocurrencytradingsimulator.utils.BASE_URL
@@ -87,6 +88,11 @@ object AppModule{
     @Provides
     fun provideOwnedDao(appDatabase: AppDatabase): OwnedDao {
         return appDatabase.ownedDao()
+    }
+
+    @Provides
+    fun provideNotificationsDao(appDatabase: AppDatabase): NotificationsDao {
+        return appDatabase.notificationsDao()
     }
 
 }

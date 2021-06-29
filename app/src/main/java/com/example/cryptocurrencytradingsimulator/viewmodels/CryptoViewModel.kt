@@ -1,6 +1,7 @@
 package com.example.cryptocurrencytradingsimulator.viewmodels
 
 import android.content.SharedPreferences
+import android.text.Editable
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,7 +28,12 @@ class CryptoViewModel @AssistedInject constructor(
     val chartData: MutableLiveData<CryptoChartData> = MutableLiveData()
     val transactions: MutableLiveData<List<Transaction>> = MutableLiveData()
     var money: MutableLiveData<Float> = MutableLiveData(sharedPreferences.getFloat("money", 0F))
+    val notification: MutableLiveData<Notification?> = MutableLiveData()
     val owned: MutableLiveData<Owned> = MutableLiveData()
+
+    val handler = CoroutineExceptionHandler { _, exception ->
+        Log.e("EXCEPTION", exception.toString())
+    }
 
     init {
         viewModelScope.launch(CoroutineExceptionHandler { _, exception ->
@@ -40,6 +46,7 @@ class CryptoViewModel @AssistedInject constructor(
         getChartData("1D")
         getTransactions()
         getOwned()
+        getNotification()
     }
 
     companion object {
@@ -54,8 +61,14 @@ class CryptoViewModel @AssistedInject constructor(
         }
     }
 
+    private fun getNotification(){
+        GlobalScope.launch{
+            notification.postValue(repository.getNotification(cryptoId))
+        }
+    }
+
     fun getOwned() {
-        GlobalScope.async {
+        GlobalScope.launch {
                 owned.postValue(repository.getOwned(cryptoId))
             }
     }
@@ -98,13 +111,13 @@ class CryptoViewModel @AssistedInject constructor(
     }
 
     fun getTransactions() {
-        GlobalScope.async {
+        GlobalScope.launch {
             transactions.postValue(repository.getTransactions(cryptoId))
         }
     }
 
     fun buyCrypto(value: Double, amount: Double) {
-        GlobalScope.async {
+        GlobalScope.launch {
             val ownd = repository.getOwned(cryptoId)
             if (ownd != null) {
                 ownd.amount += amount
@@ -135,7 +148,7 @@ class CryptoViewModel @AssistedInject constructor(
 
     }
     fun sellCrypto(value: Double, amount: Double) {
-        GlobalScope.async {
+        GlobalScope.launch {
             val ownd = repository.getOwned(cryptoId)
             if (ownd != null) {
                 ownd.amount -= amount
@@ -163,6 +176,23 @@ class CryptoViewModel @AssistedInject constructor(
         }
 
 
+    }
+
+    fun setNotification(price: String) {
+        GlobalScope.launch(handler) {
+            val direction = if(crypto.value!!.current_price!! < price.toDouble()) Direction.GREATER_THAN else Direction.LESSER_THAN
+            repository.notificationsDao.insert(Notification(0, cryptoId, price.toDouble(),  direction))
+            getNotification()
+        }
+    }
+
+    fun deleteNotification(){
+        notification.value?.let {
+            GlobalScope.launch(handler) {
+                repository.notificationsDao.delete(notification.value!!)
+                getNotification()
+            }
+        }
     }
 
 }

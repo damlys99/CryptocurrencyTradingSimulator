@@ -10,9 +10,4 @@
         android:enabled="true"
         android:icon="@drawable/ic_profile_24"
         android:title="@string/menu_profile"/>
-    <item
-        android:id="@+id/menu_achievements"
-        android:enabled="true"
-        android:icon="@drawable/ic_star_24"
-        android:title="@string/menu_achievements"/>
 </menu>

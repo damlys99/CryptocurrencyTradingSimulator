@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -40,11 +39,9 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <CheckBox
-                        android:id="@+id/button"
+                        android:id="@+id/buttonSetNotification"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:maxLines="1" />
+                        android:layout_height="wrap_content" />
 
                     <TextView
                         android:id="@+id/textViewNotification"
@@ -56,12 +53,9 @@
                         android:id="@+id/editTextNotificationPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:autofillHints=""
-                        android:digits="0123456789."
                         android:ems="5"
-                        android:hint=""
-                        android:inputType="numberDecimal"
-                        tools:ignore="LabelFor" />
+                        android:hint="@string/headerPrice"
+                        android:inputType="numberDecimal"/>
 
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

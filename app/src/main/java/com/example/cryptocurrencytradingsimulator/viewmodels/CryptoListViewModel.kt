@@ -54,7 +54,7 @@ class CryptoListViewModel @Inject constructor(
 
     fun addOrDeleteFavorite(crypto: Crypto, isChecked: Boolean){
         crypto.favorite = isChecked
-        GlobalScope.async{
+        GlobalScope.launch{
             repository.addOrDeleteFavorite(isChecked, Favorite(id = crypto.id!!))
         }
 

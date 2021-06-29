@@ -14,5 +14,4 @@ data class Notification(
     val id: String,
     val price: Double,
     val comp: Direction
-
 )
